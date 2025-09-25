@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import "./style.css";
+import useDebounce from "../../hooks/useDebounce";
 
 interface Post {
      title: string;
@@ -19,45 +20,48 @@ const PostCard = () => {
      const [loading, setLoading] = useState(false);
      const [error, setError] = useState("");
 
+     const debouncedSearch: string | undefined = useDebounce(searchTerm, 300);
+
      const url = "https://dummyjson.com/posts";
 
-     useEffect(() => {
-          const fetchPostData = async () => {
-               try {
-                    setLoading(true);
-                    setError("");
-                    const res = await fetch(url);
-                    if (!res.ok) {
-                         throw new Error(`Failed to fetch the post: ${res.status}`);
-                    }
-                    const data = await res.json();
-                    setPostData(data.posts);
-               } catch (error: any) {
-                    console.error("Error: ", error);
-                    setError(error.message || "Something went wrong");
-                    setPostData([]);
-
-                    setLoading(false);
-               } finally {
-                    setLoading(false);
+     const fetchPostData = async () => {
+          try {
+               setLoading(true);
+               setError("");
+               const res = await fetch(url);
+               if (!res.ok) {
+                    throw new Error(`Failed to fetch the post: ${res.status}`);
                }
-          };
-          fetchPostData();
+               const data = await res.json();
+               setPostData(data.posts);
+          } catch (error: any) {
+               console.error("Error: ", error);
+               setError(error.message || "Something went wrong");
+               setPostData([]);
 
-          return () => {};
+               setLoading(false);
+          } finally {
+               setLoading(false);
+          }
+     };
+
+     useEffect(() => {
+          fetchPostData();
      }, []);
 
      const filteredPost = useMemo(() => {
-          return postData.filter((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase()));
-     }, [postData, searchTerm]);
+          return postData.filter((post) => post.title.toLowerCase().includes((debouncedSearch ?? "").toLowerCase()));
+     }, [postData, debouncedSearch]);
 
      if (loading) return <p>Loading...</p>;
-     if (error)
+
+     if (error) {
           return (
                <p>
                     {error} <button onClick={() => window.location.reload()}>Refresh Page</button>
                </p>
           );
+     }
 
      return (
           <>

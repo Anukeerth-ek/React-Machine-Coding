@@ -1,3 +1,7 @@
+.container {
+    width: 100%;
+}
+
 .postCard{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -7,5 +11,6 @@
 
 .postCard > div {
     background-color: coral;
-    
+    min-height: 150px;
+    vertical-align: center;
 }
