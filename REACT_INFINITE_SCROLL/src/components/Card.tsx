@@ -1,40 +1,61 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ImageCard } from "./ImageCard";
 
 const Card = () => {
-     const [data, setData] = useState([]);
-     const [limit, setLimit] = useState(8);
-     // const [loading, setLoading] = useState(true)
-     const initialValue = 0;
+     const [postData, setPostData] = useState<any>([]);
+     const [limit] = useState(8);
+     const [start, setStart] = useState(0);
+     const [loading, setLoading] = useState(false);
+
+     const loaderRef = useRef<HTMLDivElement | null>(null);
+
+     const fetchApiData = async () => {
+          try {
+               setLoading(true);
+               const res = await fetch(`https://jsonplaceholder.typicode.com/photos?_start=${start}&_limit=${limit}`);
+
+               const data = await res.json();
+               setPostData((prev: any) => [...prev, ...data]);
+          } catch (error) {
+               console.error(error);
+          } finally {
+               setLoading(false);
+          }
+     };
 
      useEffect(() => {
-          const fetchApiData = () => {
-               // setLoading(true)
-               fetch(`https://jsonplaceholder.typicode.com/photos`)
-                    .then((res) => res.json())
-                    .then((data) => setData(data.slice(initialValue, limit)));
-                    // setLoading(false)
-          };
           fetchApiData();
-     }, [limit]);
+     }, [start]);
 
      useEffect(() => {
-          const handleInfiniteScroll = () => {
-               if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight) {
-                    setLimit((prevLimit) => prevLimit + 8);
+          const observer = new IntersectionObserver(
+               (entries) => {
+                    const target = entries[0];
+
+                    if (target.isIntersecting) {
+                         setStart((prev) => prev + limit);
+                    }
+               },
+               { threshold: 1.0 }
+          );
+
+          if (loaderRef.current) {
+               observer.observe(loaderRef.current);
+          }
+
+          return () => {
+               if (loaderRef.current) {
+                    observer.unobserve(loaderRef.current);
                }
           };
-          document.addEventListener("scroll", handleInfiniteScroll);
-          return () => {
-               window.removeEventListener("scroll", handleInfiniteScroll);
-          };
-     }, []);
+     }, [loading]);
 
      return (
           <div>
-               <div>
-                    <ImageCard data={data} />
-               </div>
+               <ImageCard data={postData} />
+
+               <div ref={loaderRef} style={{ height: "20px" }} />
+               {loading && <p className="text-center mt-5">Loading...</p>}
           </div>
      );
 };
