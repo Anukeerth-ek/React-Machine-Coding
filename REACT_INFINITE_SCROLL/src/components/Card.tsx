@@ -28,16 +28,17 @@ const Card = () => {
      }, [start]);
 
      useEffect(() => {
-          const observer = new IntersectionObserver((entries) => {
+          const observer = new IntersectionObserver(
+               (entries) => {
+                    const target = entries[0];
 
-               const target = entries[0];
+                    if (target.isIntersecting) {
+                         setStart((prev) => prev + limit);
+                    }
+               },
+               { threshold: 1 }
+          );
 
-               if (target.isIntersecting) {
-                    setStart((prev)=> prev + limit)
-               }
-               
-          }, { threshold: 1 })
-          
           if (loaderRef.current) {
                observer.observe(loaderRef.current);
           }
