@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import ProductCard from '../components/productCard'
 import type { Product } from '../types/product';
 

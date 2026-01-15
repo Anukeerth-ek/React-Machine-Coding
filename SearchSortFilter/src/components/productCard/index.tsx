@@ -1,4 +1,4 @@
-import React from 'react'
+
 import type { Product } from '../../types/product'
 
 const ProductCard =({ title, price, image, rating }:Product)=> {
