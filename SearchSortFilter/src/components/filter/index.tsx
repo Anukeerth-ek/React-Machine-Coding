@@ -1,9 +1,37 @@
-// import React from 'react'
+const categories = [
+  "All",
+  "Electronics",
+  "Fashion",
+  "Home",
+  "Furniture",
+  "Stationery",
+];
 
-const Filter = () => {
+const FilterBar = () => {
   return (
-    <div>Filter</div>
-  )
-}
+    <div>
+      <p className="text-sm font-medium text-gray-700 mb-2">Categories</p>
 
-export default Filter
+      <div className="flex flex-wrap gap-2">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className="
+              px-4 py-1.5
+              rounded-full
+              border
+              text-sm
+              hover:bg-indigo-600
+              hover:text-white
+              transition
+            "
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default FilterBar;

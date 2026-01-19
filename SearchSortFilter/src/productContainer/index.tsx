@@ -2,7 +2,7 @@
 import ProductCard from '../components/productCard'
 import type { Product } from '../types/product';
 
-const ProductContainer = () => {
+const ProductContainer = ({searchTerm}:any) => {
      const products:Product[] = [
   {
     id: 1,
@@ -100,12 +100,22 @@ const ProductContainer = () => {
     image: "https://picsum.photos/300/300?random=12",
     category: "Electronics",
   },
-];
-
+    ];
+    
+  console.log(searchTerm)
+   const filteredProduct= products.filter((item) => 
+   (
+         item.title.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+    )
+    
+    
+   
+console.log('filteredProduct', filteredProduct)
   return (
      <div className="max-w-7xl mx-auto p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
+        {filteredProduct.map((product) => (
           <ProductCard key={product.id} {...product} />
         ))}
       </div>
