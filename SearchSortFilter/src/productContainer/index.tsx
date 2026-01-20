@@ -3,11 +3,11 @@ import ProductCard from "../components/productCard";
 import type { Product, SortOption } from "../types/product";
 
 type ProductContainerProps = {
-     searchTerm: string;
+     debouncedSearchTerm: string;
      selectedSort: SortOption;
 };
 
-const ProductContainer = ({ searchTerm, selectedSort }: ProductContainerProps) => {
+const ProductContainer = ({ debouncedSearchTerm, selectedSort }: ProductContainerProps) => {
      const products: Product[] = [
           {
                id: 1,
@@ -107,7 +107,7 @@ const ProductContainer = ({ searchTerm, selectedSort }: ProductContainerProps) =
           },
      ];
 
-     const filteredProduct = products.filter((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase()));
+     const filteredProduct = products.filter((item) => item.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()));
 
      const sortedProducts = [...filteredProduct].sort((a, b) => {
           const aVal = a[selectedSort.key];

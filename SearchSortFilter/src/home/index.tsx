@@ -1,46 +1,57 @@
 import SearchBar from "../components/searchbar";
 import ProductContainer from "../productContainer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SortBar from "../components/sort";
 import FilterBar from "../components/filter";
 import type { SortOption } from "../types/product";
 
 const Home = () => {
-     const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSort, setSelectedSort] = useState<SortOption>({ key: 'title', order: 'asc' });
-     const [selectedSortMethod, setSelectedSortMethod] = useState('')
-     
+     const [searchTerm, setSearchTerm] = useState<string | any>("");
+     const [selectedSort, setSelectedSort] = useState<SortOption>({ key: "title", order: "asc" });
+     const [selectedSortMethod, setSelectedSortMethod] = useState("");
+     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
+
+     useEffect(() => {
+        const timer =  setTimeout(() => {
+              setDebouncedSearchTerm(searchTerm) 
+          }, 500)
+
+          return () => {
+               clearTimeout(timer)
+          }
+     }, [searchTerm])
+
      const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           const value = e.target.value;
           setSearchTerm(value);
      };
 
      const onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-       const value = e.target.value;
-       setSelectedSortMethod(value)
+          const value = e.target.value;
+          setSelectedSortMethod(value);
           let key: keyof import("../types/product").Product;
-          let order: 'asc' | 'desc';
+          let order: "asc" | "desc";
 
           switch (value) {
                case "NAME_ASC":
-                    key = 'title';
-                    order = 'asc';
+                    key = "title";
+                    order = "asc";
                     break;
                case "NAME_DESC":
-                    key = 'title';
-                    order = 'desc';
+                    key = "title";
+                    order = "desc";
                     break;
                case "PRICE_ASC":
-                    key = 'price';
-                    order = 'asc';
+                    key = "price";
+                    order = "asc";
                     break;
                case "PRICE_DESC":
-                    key = 'price';
-                    order = 'desc';
+                    key = "price";
+                    order = "desc";
                     break;
                default:
-                    key = 'title';
-                    order = 'asc';
+                    key = "title";
+                    order = "asc";
           }
           setSelectedSort({ key, order });
      };
@@ -49,9 +60,9 @@ const Home = () => {
           <div>
                Home
                <SearchBar onSearchChange={onSearchChange} searchTerm={searchTerm} />
-         <SortBar onSelectChange={onSelectChange} selectedSortMethod={selectedSortMethod} />
+               <SortBar onSelectChange={onSelectChange} selectedSortMethod={selectedSortMethod} />
                <FilterBar />
-         <ProductContainer searchTerm={searchTerm} selectedSort={ selectedSort} />
+               <ProductContainer debouncedSearchTerm={debouncedSearchTerm} selectedSort={selectedSort} />
           </div>
      );
 };
