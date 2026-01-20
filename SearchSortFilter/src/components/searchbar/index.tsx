@@ -8,7 +8,7 @@ const SearchBar = ({ onSearchChange, searchTerm }: SearchBarProps) => {
      return (
           <div>
                <input
-                    className="border border-2"
+                    className="border"
                     type="search"
                     placeholder="Search product..."
                     value={searchTerm}

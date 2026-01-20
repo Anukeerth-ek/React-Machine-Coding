@@ -6,3 +6,8 @@ export type Product = {
     image: string;
     category: string;
 }
+
+export type SortOption = {
+    key: keyof Product;
+    order: 'asc' | 'desc';
+}
