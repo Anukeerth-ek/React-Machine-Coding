@@ -7,7 +7,7 @@ export const ImageCard = (props: any) => {
                     {data?.map((item: any, index: any) => (
                          <div
                               key={index}
-                              className=" h-[200px] border-2 shadow-lg rounded-xl p-3 hover:shadow-2xl hover:shadow-rose-500 duration-300"
+                              className=" h-[400px] border-2 shadow-lg rounded-xl p-3 hover:shadow-2xl hover:shadow-rose-500 duration-300"
                          >
                               <img alt="image here" src={item.thumbnailUrl} className="w-full object-contain" />
                               <div className="flex items-center justify-between gap-x-3 mt-3">

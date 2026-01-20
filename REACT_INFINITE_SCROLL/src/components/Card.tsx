@@ -6,6 +6,7 @@ const Card = () => {
      const limit = 8;
      const [start, setStart] = useState(0);
      const [loading, setLoading] = useState(false);
+     const [error, setError] = useState<Error | string | null>();
 
      const loaderRef = useRef<any>(null);
 
@@ -16,8 +17,8 @@ const Card = () => {
 
                const data = await res.json();
                setPostData((prev: any) => [...prev, ...data]);
-          } catch (error) {
-               console.error(error);
+          } catch (error: any) {
+               setError(error.message || "Something went wrong!");
           } finally {
                setLoading(false);
           }
@@ -36,7 +37,7 @@ const Card = () => {
                          setStart((prev) => prev + limit);
                     }
                },
-               { threshold: 1 }
+               { threshold: 1 },
           );
 
           if (loaderRef.current) {
@@ -49,6 +50,14 @@ const Card = () => {
                }
           };
      }, []);
+
+     if (error)
+          return (
+               <>
+                    <p>{error.toString()}</p>
+                    <button onClick={() => window.location.reload()}>Refresh</button>
+               </>
+          );
 
      return (
           <div>
